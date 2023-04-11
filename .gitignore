@@ -1,0 +1,4 @@
+# List of all ignored directries and files:
+.vscode/
+**/__pycache__
+venv/
