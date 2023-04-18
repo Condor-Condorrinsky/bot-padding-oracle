@@ -23,13 +23,13 @@ def check_padding(ciphertext: str) -> bool:
         print(e)
         return None
     
-if __name__ == '__main__':
-    string = encrypt("trolololo")
-    string2 = string[0:-1] + b'e'
-    string3 = "dTTriExcRXPmf8JYp/u58w=="
-    ret = check_padding(string)
-    ret2 = check_padding(string2)
-    ret3 = check_padding(string3)
-    print(ret)
-    print(ret2)
-    print(ret3)
+# if __name__ == '__main__':
+#     string = encrypt("trolololo")
+#     string2 = string[0:-1] + b'e'
+#     string3 = "dTTriExcRXPmf8JYp/u58w=="
+#     ret = check_padding(string)
+#     ret2 = check_padding(string2)
+#     ret3 = check_padding(string3)
+#     print(ret)
+#     print(ret2)
+#     print(ret3)
