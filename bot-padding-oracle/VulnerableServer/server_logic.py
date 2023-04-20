@@ -1,8 +1,6 @@
 from Crypto.Random import get_random_bytes
 from AESCipher import AESCipher
 
-# Exactly 64 bytes
-#key = b'Nieprawdopodobnie mocarny klucz ktorego nikt nigdy nie zlamie...'
 # Exactly 32 bytes
 key = bytes('Nieprawdopodobnie mocarny klucz.', 'utf-8')
 # Exactly 16 bytes

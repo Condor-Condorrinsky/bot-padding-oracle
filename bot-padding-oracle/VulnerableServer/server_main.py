@@ -4,17 +4,14 @@ from server_logic import *
 server = Flask(__name__)
 
 @server.route('/encrypt', methods=['POST'])
-def GET_encrypt():
-    # plain = request.args.get('plaintext')
+def POST_encrypt():
     content = request.json
-    print(content)
-    return encrypt(content.get('cos'))
+    return encrypt(content.get('plaintext')) + b'\n'
 
 @server.route('/checkpadding', methods=['POST'])
-def GET_check_padding():
+def POST_check_padding():
     content = request.json
-    print(content)
-    return str(check_padding(content.get('cos')))
+    return str(check_padding(content.get('ciphertext'))) + '\n'
 
 if __name__ == '__main__':
     server.run(host='localhost', port=5000, debug=False)
