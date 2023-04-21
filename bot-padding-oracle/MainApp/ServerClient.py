@@ -7,7 +7,6 @@ class ServerClient(object):
 
     def sendPOST(self, suburl: str, data: str, headers: str) -> str:
         connection = http.client.HTTPConnection(self.website_url)
-        full_url = self.website_url + suburl
-        connection.request('POST', full_url, data, headers)
+        connection.request('POST', suburl, data, headers)
         response = connection.getresponse()
         return response.read().decode()

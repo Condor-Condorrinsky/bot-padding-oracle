@@ -30,9 +30,11 @@ class OraclePaddingDecryptor(object):
         result = self.send_request(concatenation)
         return result
 
-    def send_request(self, data: bytes) -> bool:
+    def send_request(self, data: bytes) -> str:
         client = ServerClient(self.website)
-        headers = {'Content-type': 'application/json'}
-        json_string = '{{"ciphertext":"{text}"}}'.format(text=base64.b64encode(data))
-        json_data = json.dumps(json_string)
-        return bool(client.sendPOST('/checkpadding', json_data, headers))
+        headers = {'Content-type' : 'application/json'}
+        # json_string = '{{"ciphertext":"{text}"}}'.format(text=base64.b64encode(data))
+        encoded = base64.b64encode(data)
+        json_dict = {"ciphertext" : str(base64.b64encode(data))}
+        json_data = json.dumps(json_dict)
+        return client.sendPOST('/checkpadding', json_data, headers)
