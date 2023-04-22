@@ -7,15 +7,18 @@ key = bytes('Nieprawdopodobnie mocarny klucz.', 'utf-8')
 iv = bytes('MocarnyWektor...', 'utf-8')
 
 def encrypt(plaintext: str) -> bytes:
+    print('---New encryption request---')
     cipher_machine = AESCipher(key, iv)
     return cipher_machine.encrypt(plaintext)
 
 def check_padding(ciphertext: str) -> bool:
+    print('---New padding request---')
     try:
         cipher_machine = AESCipher(key, iv)
         cipher_machine.decrypt(ciphertext)
         return True
-    except ValueError:
+    except ValueError as v:
+        print(v)
         return False
     except Exception as e:
         print(e)
