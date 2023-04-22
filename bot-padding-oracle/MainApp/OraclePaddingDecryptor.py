@@ -21,20 +21,27 @@ class OraclePaddingDecryptor(object):
         chunk_list = []
         lngth = len(self.ciphertbytes)
         for i in range(0, lngth - 1, self.__AES_BLOCK_SIZE):
-            chunk_list.append(self.ciphertbytes[i:(i + self.__AES_BLOCK_SIZE - 1)])
+            chunk_list.append(self.ciphertbytes[i:(i + self.__AES_BLOCK_SIZE)])
         return chunk_list
     
     def decrypt_single_chunk(self, byteschunk: bytes):
-        beginning_sneaky_bytes = random.randbytes(15) + b'\x99'
-        concatenation = base64.b64encode(beginning_sneaky_bytes + byteschunk)
-        result = self.send_request(concatenation)
-        return result
+        # it's impossible to directly increment a bytes object, so we'll use an integer, increment it and then convert it to a byte
+        curr_byte = 0
+        # sneaky_bytes = random.randbytes(15)
+        sneaky_bytes = b'000000000000000'
+        concatenation = base64.b64encode(sneaky_bytes + self.int_to_byte(curr_byte) + byteschunk)
+        while ((result := self.send_request(concatenation)) != 'True'):
+            print(str(curr_byte) + ': ' + result)
+            curr_byte += 1
+            concatenation = base64.b64encode(sneaky_bytes + self.int_to_byte(curr_byte) + byteschunk)
+        return curr_byte
+        
+    def int_to_byte(self, num: int):
+        return num.to_bytes(1, byteorder='big')
 
     def send_request(self, data: bytes) -> str:
         client = ServerClient(self.website)
         headers = {'Content-type' : 'application/json'}
-        # json_string = '{{"ciphertext":"{text}"}}'.format(text=base64.b64encode(data))
-        encoded = base64.b64encode(data)
-        json_dict = {"ciphertext" : str(base64.b64encode(data))}
+        json_dict = {'ciphertext' : data.decode('utf-8')}
         json_data = json.dumps(json_dict)
         return client.sendPOST('/checkpadding', json_data, headers)
