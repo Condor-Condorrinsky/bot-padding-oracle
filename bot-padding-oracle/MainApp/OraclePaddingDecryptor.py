@@ -24,20 +24,29 @@ class OraclePaddingDecryptor(object):
             chunk_list.append(self.ciphertbytes[i:(i + self.__AES_BLOCK_SIZE)])
         return chunk_list
     
-    def decrypt_single_chunk(self, byteschunk: bytes):
+    def zip_xor(self, b1, b2):
+        return bytes(a ^ b for a, b in zip(b1, b2))
+    
+    def xor(self, chunks: list[bytes]):
+        start = chunks[0]
+        for chunk in chunks[1:]:
+            start = self.zip_xor(start, chunk)
+        return start
+    
+    def decrypt_single_chunk(self, chunk_i_minus_1: bytes, chunk_i: bytes):
         # it's impossible to directly increment a bytes object, so we'll use an integer, increment it and then convert it to a byte
         curr_byte = 0
-        # sneaky_bytes = random.randbytes(15)
-        sneaky_bytes = b'000000000000000'
-        concatenation = base64.b64encode(sneaky_bytes + self.int_to_byte(curr_byte) + byteschunk)
-        while ((result := self.send_request(concatenation)) != 'True'):
+        chunks = [chunk_i_minus_1, b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01',
+                  (b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + int.to_bytes(curr_byte))]
+        c_prim = self.xor(chunks) + chunk_i
+        encoded = base64.b64encode(c_prim)
+        while ((result := self.send_request(encoded)) != 'True'):
             print(str(curr_byte) + ': ' + result)
             curr_byte += 1
-            concatenation = base64.b64encode(sneaky_bytes + self.int_to_byte(curr_byte) + byteschunk)
+            chunks[2] = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + int.to_bytes(curr_byte)
+            c_prim = self.xor(chunks) + chunk_i
+            encoded = base64.b64encode(c_prim)
         return curr_byte
-        
-    def int_to_byte(self, num: int):
-        return num.to_bytes(1, byteorder='big')
 
     def send_request(self, data: bytes) -> str:
         client = ServerClient(self.website)
