@@ -19,6 +19,9 @@ def check_padding(ciphertext: str) -> bool | None:
         cipher_machine = AESCipher(key, iv)
         cipher_machine.decrypt(ciphertext)
         return True
+    except TypeError as t:
+        print(t)
+        return True
     except ValueError as v:
         print(v)
         return False
