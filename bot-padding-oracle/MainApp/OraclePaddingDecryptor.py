@@ -40,17 +40,19 @@ class OraclePaddingDecryptor(object):
         for i in range(0, self.__AES_BLOCK_SIZE):
             # it's impossible to directly increment a bytes object, so we'll use an integer, increment it and then
             # convert it to a byte
-            curr_byte = 0
+            curr_byte = 255
             chunks = [chunk_i_minus_1, self.prepare_pkcs7_xor_block(i + 1),
                       self.prepare_sneaky_bytes(curr_byte, result)]
             c_prim = xor(chunks) + chunk_i
             encoded = base64.b64encode(c_prim)
             while self.send_request(encoded) != 'True':
-                curr_byte += 1
+                curr_byte -= 1
                 chunks[2] = self.prepare_sneaky_bytes(curr_byte, result)
                 c_prim = xor(chunks) + chunk_i
                 encoded = base64.b64encode(c_prim)
-            result += int.to_bytes(curr_byte, byteorder='big', length=1)
+            # We want to append at the beginning, not the end, hence no "+="
+            result = int.to_bytes(curr_byte, byteorder='big', length=1) + result
+            print(curr_byte)
         return result
 
     def prepare_pkcs7_xor_block(self, value: int) -> bytes:

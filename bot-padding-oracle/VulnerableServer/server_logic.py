@@ -2,9 +2,11 @@
 from AESCipher import AESCipher
 
 # Exactly 32 bytes
-key = bytes('Nieprawdopodobnie mocarny klucz.', 'utf-8')
+# key = bytes('Nieprawdopodobnie mocarny klucz.', 'utf-8')
+key = bytes('ffffffffffffffffffffffffffffffff', 'utf-8')
 # Exactly 16 bytes
-iv = bytes('MocarnyWektor...', 'utf-8')
+# iv = bytes('MocarnyWektor...', 'utf-8')
+iv = bytes('kkkkkkkkkkkkkkkk', 'utf-8')
 
 
 def encrypt(plaintext: str) -> bytes:

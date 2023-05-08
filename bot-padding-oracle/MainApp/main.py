@@ -2,7 +2,7 @@ from OraclePaddingDecryptor import *
 
 if __name__ == '__main__':
     example_cipher = \
-        '3k74e8Ie12G8I3tmPrHowXMdnSFyI3Ipkbwjgr03GATqQU+kuU4Mu1gtAY/SJ+tbR9B6j7lYU7CIhgoDcYDsqVuKrLK+ZMK2rHJZpcASKiE='
+        'B1kn29C1MbTLTwvrykyLbvZq8DhY36oBFi3dHOvkVl0eEFug50TO5zo3WoRMC7HG3LLtrhL/6Y1LcG0EdK1hzymc8eMuaEwdJBDTdBGSgOU='
     serv = '127.0.0.1:5000'
     decryptor = OraclePaddingDecryptor(example_cipher, serv)
     blocks = decryptor.split_ciphertext_into_blocks()
