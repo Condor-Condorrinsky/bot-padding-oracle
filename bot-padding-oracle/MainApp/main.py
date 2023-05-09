@@ -6,4 +6,5 @@ if __name__ == '__main__':
     serv = '127.0.0.1:5000'
     decryptor = OraclePaddingDecryptor(example_cipher, serv)
     blocks = decryptor.split_ciphertext_into_blocks()
-    print(decryptor.decrypt_single_chunk(blocks[-2], blocks[-1]))
+    result = decryptor.decrypt_bytes()
+    print(result)

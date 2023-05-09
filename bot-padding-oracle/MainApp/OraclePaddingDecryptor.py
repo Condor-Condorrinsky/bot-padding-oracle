@@ -22,11 +22,13 @@ class OraclePaddingDecryptor(object):
         self.cipher_bytes = base64.b64decode(ciphertext)
         self.website = website
 
-    def decrypt_bytes(self):
+    def decrypt_bytes(self) -> bytes:
+        result = b''
         ciphertext_chunks = self.split_ciphertext_into_blocks()
-        for fragment in ciphertext_chunks:
-            pass
-        return
+        # Going from the last element of list to the 2nd
+        for i in range(len(ciphertext_chunks) - 1, 0, -1):
+            result = self.decrypt_single_chunk(ciphertext_chunks[i-1], ciphertext_chunks[i]) + result
+        return result
 
     def split_ciphertext_into_blocks(self) -> list:
         chunk_list = []
