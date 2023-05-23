@@ -1,5 +1,4 @@
 from flask import Flask, request
-# import json
 from server_logic import *
 
 server = Flask(__name__)
