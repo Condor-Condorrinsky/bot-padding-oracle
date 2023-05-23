@@ -1,5 +1,6 @@
 from AESCipher import AESCipher
 
+# AUTHOR IS AWARE THAT HARDCODING KEYS/IVS IS A TERRIBLE PRACTICE; THIS IS FOR EDUCATIONAL PURPOSES
 # Exactly 32 bytes
 key = bytes('Nieprawdopodobnie mocarny klucz.', 'utf-8')
 # Exactly 16 bytes

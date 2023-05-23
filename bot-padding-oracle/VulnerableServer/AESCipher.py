@@ -7,16 +7,15 @@ class AESCipher(object):
     __AES_BLOCK_SIZE = 16
 
     def __init__(self, key, iv):
-        self.bs = AES.block_size
         self.key = key
         self.iv = iv
 
-    def encrypt(self, raw):
+    def encrypt(self, raw: str) -> bytes:
         raw = pad(bytes(raw, 'utf-8'), self.__AES_BLOCK_SIZE, style='pkcs7')
         cipher = AES.new(self.key, AES.MODE_CBC, self.iv)
         return base64.b64encode(cipher.encrypt(raw))
 
-    def decrypt(self, enc):
+    def decrypt(self, enc: str) -> str:
         decoded = base64.b64decode(enc)
         cipher = AES.new(self.key, AES.MODE_CBC, self.iv)
         decrypted = cipher.decrypt(decoded)
