@@ -14,6 +14,11 @@ def xor(chunks: list[bytes]) -> bytes:
     return start
 
 
+def unpad(data: bytes) -> bytes:
+    number = int.from_bytes(data[-1:], 'big')
+    return data[:-1*number]
+
+
 class OraclePaddingDecryptor(object):
     __AES_BLOCK_SIZE = 16
 
@@ -27,8 +32,7 @@ class OraclePaddingDecryptor(object):
         # Going from the last element of list to the 2nd
         for i in range(len(ciphertext_chunks) - 1, 0, -1):
             result = self.decrypt_single_chunk(ciphertext_chunks[i-1], ciphertext_chunks[i]) + result
-            print(result)
-        return result
+        return unpad(result)
 
     def split_ciphertext_into_blocks(self) -> list:
         chunk_list = []
@@ -47,7 +51,7 @@ class OraclePaddingDecryptor(object):
                       self.prepare_sneaky_bytes(curr_byte, result)]
             c_prim = xor(chunks) + chunk_i
             encoded = base64.b64encode(c_prim)
-            while self.send_request(encoded) != 'True':
+            while self.send_request(encoded, '/checkpadding') != 'True':
                 curr_byte -= 1
                 chunks[2] = self.prepare_sneaky_bytes(curr_byte, result)
                 c_prim = xor(chunks) + chunk_i
@@ -66,9 +70,9 @@ class OraclePaddingDecryptor(object):
         return (self.__AES_BLOCK_SIZE - len(curr_result) - 1) * b'\x00' +\
             int.to_bytes(curr_byte, byteorder='big', length=1) + curr_result
 
-    def send_request(self, data: bytes) -> str:
+    def send_request(self, data: bytes, route: str) -> str:
         client = ServerClient(self.website)
         headers = {'Content-type': 'application/json'}
         json_dict = {'ciphertext': data.decode('utf-8')}
         json_data = json.dumps(json_dict)
-        return client.send_post('/checkpadding', json_data, headers)
+        return client.send_post(route, json_data, headers)
