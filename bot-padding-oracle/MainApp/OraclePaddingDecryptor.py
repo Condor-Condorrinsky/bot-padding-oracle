@@ -1,14 +1,13 @@
 import base64
-# import random
 import json
 from ServerClient import *
 
 
-def zip_xor(b1, b2):
+def zip_xor(b1: bytes, b2: bytes) -> bytes:
     return bytes(a ^ b for a, b in zip(b1, b2))
 
 
-def xor(chunks: list[bytes]):
+def xor(chunks: list[bytes]) -> bytes:
     start = chunks[0]
     for chunk in chunks[1:]:
         start = zip_xor(start, chunk)
@@ -28,6 +27,7 @@ class OraclePaddingDecryptor(object):
         # Going from the last element of list to the 2nd
         for i in range(len(ciphertext_chunks) - 1, 0, -1):
             result = self.decrypt_single_chunk(ciphertext_chunks[i-1], ciphertext_chunks[i]) + result
+            print(result)
         return result
 
     def split_ciphertext_into_blocks(self) -> list:
@@ -37,7 +37,7 @@ class OraclePaddingDecryptor(object):
             chunk_list.append(self.cipher_bytes[i:(i + self.__AES_BLOCK_SIZE)])
         return chunk_list
 
-    def decrypt_single_chunk(self, chunk_i_minus_1: bytes, chunk_i: bytes):
+    def decrypt_single_chunk(self, chunk_i_minus_1: bytes, chunk_i: bytes) -> bytes:
         result = b''
         for i in range(0, self.__AES_BLOCK_SIZE):
             # it's impossible to directly increment a bytes object, so we'll use an integer, increment it and then
@@ -54,7 +54,7 @@ class OraclePaddingDecryptor(object):
                 encoded = base64.b64encode(c_prim)
             # We want to append at the beginning, not the end, hence no "+="
             result = int.to_bytes(curr_byte, byteorder='big', length=1) + result
-            print(curr_byte)
+            print(result)
         return result
 
     def prepare_pkcs7_xor_block(self, value: int) -> bytes:
