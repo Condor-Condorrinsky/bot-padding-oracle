@@ -22,9 +22,10 @@ def unpad(data: bytes) -> bytes:
 class OraclePaddingDecryptor(object):
     __AES_BLOCK_SIZE = 16
 
-    def __init__(self, ciphertext: str, website: str):
+    def __init__(self, ciphertext: str, website: str, verbose: bool):
         self.cipher_bytes = base64.b64decode(ciphertext)
         self.website = website
+        self.verbose = verbose
 
     def decrypt_bytes(self) -> bytes:
         result = b''
@@ -58,7 +59,8 @@ class OraclePaddingDecryptor(object):
                 encoded = base64.b64encode(c_prim)
             # We want to append at the beginning, not the end, hence no "+="
             result = int.to_bytes(curr_byte, byteorder='big', length=1) + result
-            print(result)
+            if self.verbose:
+                print(result)
         return result
 
     def prepare_pkcs7_xor_block(self, value: int) -> bytes:

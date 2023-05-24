@@ -3,7 +3,7 @@ from ServerClient import *
 import argparse
 
 
-def main(server: str, text: str, test: bool, encrypt: bool):
+def main(server: str, text: str, test: bool, encrypt: bool, verbose: bool):
 
     if test:
         data = bytes(text, 'utf-8')
@@ -25,7 +25,7 @@ def main(server: str, text: str, test: bool, encrypt: bool):
         print(result)
         return
 
-    decryptor = OraclePaddingDecryptor(text, server)
+    decryptor = OraclePaddingDecryptor(text, server, verbose)
     decrypted = decryptor.decrypt_bytes()
     print('Final result: \"' + bytes.decode(decrypted, 'utf-8') + '\"')
 
@@ -47,6 +47,10 @@ if __name__ == '__main__':
         Ask server to encrypt your message instead of breaking the ciphertext
         """, action='store_true')
 
+    parser.add_argument('-v', '--verbose', help="""
+    Verbose output for decryption
+    """, action='store_true')
+
     args = parser.parse_args()
 
-    main(args.server, args.text, args.test, args.encrypt)
+    main(args.server, args.text, args.test, args.encrypt, args.verbose)
