@@ -1,2 +1,2 @@
 Flask>=2.2.2
-crypto>=1.4.1
+pycryptodome>=3.17
